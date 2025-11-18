@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рекомендации для пользователя #{{ user_id }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e8e8e8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #2c2c2c;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        h2 {
+            color: #4a4a4a;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d0d0d0;
+            font-weight: 300;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #808080;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #6a6a6a;
+            transform: translateY(-1px);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .product-card {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #b0b0b0;
+        }
+        
+        .product-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .product-category {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #6a6a6a;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            font-size: 1.4em;
+            font-weight: 400;
+            color: #4a4a4a;
+            margin: 10px 0;
+        }
+        
+        .product-rating {
+            color: #ffc107;
+            font-size: 1.1em;
+        }
+        
+        .product-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .recommendation-badge {
+            background: #4a4a4a;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #5a5a5a;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-button">← Назад</a>
+        
+        <h1>Пользователь #{{ user_id }}</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">{{ purchases|length }}</div>
+                <div class="stat-label">Покупок</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ recommendations|length }}</div>
+                <div class="stat-label">Рекомендаций</div>
+            </div>
+        </div>
+        
+        <h2>📦 История покупок</h2>
+        {% if purchases %}
+        <div class="products-grid">
+            {% for product in purchases %}
+            <div class="product-card">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-category">{{ product.category }}</div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div class="product-rating">
+                    {% for i in range(product.rating) %}⭐{% endfor %}
+                    ({{ product.rating }}/5)
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data">Нет данных о покупках</div>
+        {% endif %}
+        
+        <h2>✨ Рекомендации для вас</h2>
+        {% if recommendations %}
+        <div class="products-grid">
+            {% for product in recommendations %}
+            <div class="product-card">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-category">{{ product.category }}</div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div class="product-rating">
+                    {% for i in range(product.rating|int) %}⭐{% endfor %}
+                    ({{ "%.1f"|format(product.rating) }}/5)
+                </div>
+                <div class="product-info">
+                    Рекомендовано на основе {{ product.count }} похожих покупок
+                </div>
+                <div class="recommendation-badge">
+                    🎯 Рекомендовано специально для вас
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data">Нет доступных рекомендаций</div>
+        {% endif %}
+    </div>
+</body>
+</html>
